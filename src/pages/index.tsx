@@ -209,29 +209,28 @@ function Dashboard({ session, status }: DashboardProps) {
         </button>
       </div>
       <div className="flex h-2/5 bg-green-200 border border-gray-900 shadow rounded m-4 p-4">
-        {allLifts.status === "success" && (
-          <p>
-            {allLiftsMutation.isLoading ? (
-              <p>Loading...</p>
-            ) : (
-              <Bar
-                data={{
-                  labels: Object.keys(
-                    JSON.parse(JSON.stringify(allLifts.data))
-                  ),
-                  datasets: [
-                    {
-                      label: "Personal Records",
-                      data: Object.values(
-                        JSON.parse(JSON.stringify(allLifts.data))
-                      ),
-                    },
-                  ],
-                }}
-              />
-            )}
-          </p>
-        )}
+        {allLifts.status === "success" &&
+          (allLiftsMutation.isLoading ? (
+            <p>Loading...</p>
+          ) : (
+            <Bar
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+              }}
+              data={{
+                labels: Object.keys(JSON.parse(JSON.stringify(allLifts.data))),
+                datasets: [
+                  {
+                    label: "Personal Records",
+                    data: Object.values(
+                      JSON.parse(JSON.stringify(allLifts.data))
+                    ),
+                  },
+                ],
+              }}
+            />
+          ))}
       </div>
     </div>
   );
