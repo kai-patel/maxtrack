@@ -112,11 +112,30 @@ function Dashboard({ session, status }: DashboardProps) {
 
   return (
     <div className="flex flex-col w-full h-full bg-gray-800">
-      <div className="flex h-1/2 bg-gray-100 border border-gray-900 shadow rounded m-4 p-4">
-        <p>
+      <div className="flex h-1/2 bg-gray-100 border border-gray-900 shadow rounded m-4 p-4 justify-between">
+        <p className="border rounded h-fit p-4 shadow">
           {session.user?.name} <img src={session.user?.image || ""} />
         </p>
+        <form>
+          <label>
+            Deadlift:
+            <input type="number" min={0} defaultValue={0} />
+          </label>
+          <label>
+            Benchpress:
+            <input type="number" min={0} defaultValue={0} />
+          </label>
+          <label>
+            Squat:
+            <input type="number" min={0} defaultValue={0} />
+          </label>
+          <label>
+            Overhead:
+            <input type="number" min={0} defaultValue={0} />
+          </label>
+        </form>
         <button
+          className="bg-blue-600 rounded shadow text-gray-100 h-fit p-2 items-center"
           onClick={async () => {
             allLiftsMutation.mutate({
               deadlift: getRandom(40.0, 100.0),
