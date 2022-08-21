@@ -12,12 +12,6 @@ import {
 import { Bar } from "react-chartjs-2";
 import { trpc } from "../utils/trpc";
 
-type TechnologyCardProps = {
-  name: string;
-  description: string;
-  documentation: string;
-};
-
 function getRandom(min: number, max: number): number {
   return Math.random() * (max - min) + min;
 }
