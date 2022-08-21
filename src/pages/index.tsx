@@ -43,11 +43,11 @@ const Home: NextPage = () => {
   }, []);
 
   return (
-    <div className="h-screen max-h-screen">
-      <header>
+    <div className="h-screen max-h-screen overflow-hidden m-0 p-0">
+      <header className="sticky top-0">
         <NavBar session={session} status={status} />
       </header>
-      <main className="relative container mx-auto flex flex-col items-center justify-center max-h-[95%] p-4">
+      <main className="relative flex flex-col items-center h-[95%] bg-gray-200">
         <Dashboard session={session} status={status} />
       </main>
     </div>
@@ -58,7 +58,7 @@ export default Home;
 
 function NavBar({ session, status }: NavBarProps) {
   return (
-    <nav className="sticky top-0 flex bg-gray-600 min-w-screen p-4 h-[5%] justify-between items-center shadow">
+    <nav className="flex bg-gray-600 min-w-screen m-0 p-4 h-[5%] justify-between items-center shadow">
       <p className="font-bold text-gray-100 select-none text-lg">MaxTrack</p>
       <NavBarProfileButton session={session} status={status} />
     </nav>
@@ -108,50 +108,52 @@ function Dashboard({ session, status }: DashboardProps) {
     },
   });
 
+  if (status !== "authenticated" || !session) return <p>Loading</p>;
+
   return (
-    <div className="flex ">
-      {status === "authenticated" && session && (
-        <div>
+    <div className="flex flex-col w-full h-full bg-gray-800">
+      <div className="flex h-1/2 bg-gray-100 border border-gray-900 shadow rounded m-4 p-4">
+        <p>
+          {session.user?.name} <img src={session.user?.image || ""} />
+        </p>
+        <button
+          onClick={async () => {
+            allLiftsMutation.mutate({
+              deadlift: getRandom(40.0, 100.0),
+              benchpress: getRandom(30.0, 40.0),
+              squat: getRandom(60.0, 80.0),
+              overhead: getRandom(20.0, 25.0),
+            });
+          }}
+        >
+          Add Lifts
+        </button>
+      </div>
+      <div className="flex h-2/5 bg-green-200 border border-gray-900 shadow rounded m-4 p-4">
+        {allLifts.status === "success" && (
           <p>
-            {session.user?.name} <img src={session.user?.image || ""} />
+            {allLiftsMutation.isLoading ? (
+              <p>Loading...</p>
+            ) : (
+              <Bar
+                data={{
+                  labels: Object.keys(
+                    JSON.parse(JSON.stringify(allLifts.data))
+                  ),
+                  datasets: [
+                    {
+                      label: "Personal Records",
+                      data: Object.values(
+                        JSON.parse(JSON.stringify(allLifts.data))
+                      ),
+                    },
+                  ],
+                }}
+              />
+            )}
           </p>
-          <button
-            onClick={async () => {
-              allLiftsMutation.mutate({
-                deadlift: getRandom(40.0, 100.0),
-                benchpress: getRandom(30.0, 40.0),
-                squat: getRandom(60.0, 80.0),
-                overhead: getRandom(20.0, 25.0),
-              });
-            }}
-          >
-            Add Lifts
-          </button>
-          {allLifts.status === "success" && (
-            <p>
-              {allLiftsMutation.isLoading ? (
-                "Loading..."
-              ) : (
-                <Bar
-                  data={{
-                    labels: Object.keys(
-                      JSON.parse(JSON.stringify(allLifts.data))
-                    ),
-                    datasets: [
-                      {
-                        label: "Personal Records",
-                        data: Object.values(
-                          JSON.parse(JSON.stringify(allLifts.data))
-                        ),
-                      },
-                    ],
-                  }}
-                />
-              )}
-            </p>
-          )}
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
