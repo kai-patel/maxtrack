@@ -12,7 +12,7 @@ import {
 import { Bar } from "react-chartjs-2";
 import { trpc } from "../utils/trpc";
 import { Session } from "next-auth";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 type NavBarProps = {
   session: Session | null;
@@ -105,7 +105,20 @@ function Dashboard({ session, status }: DashboardProps) {
   const allLiftsMutation = trpc.useMutation(["lifts.addLifts"], {
     onSuccess() {
       utils.invalidateQueries(["lifts.getAll"]);
+      setInputLifts({
+        deadlift: 0,
+        benchpress: 0,
+        squat: 0,
+        overhead: 0,
+      });
     },
+  });
+
+  const [inputLifts, setInputLifts] = useState({
+    deadlift: 0,
+    benchpress: 0,
+    squat: 0,
+    overhead: 0,
   });
 
   if (status !== "authenticated" || !session) return <p>Loading</p>;
@@ -117,32 +130,79 @@ function Dashboard({ session, status }: DashboardProps) {
           {session.user?.name} <img src={session.user?.image || ""} />
         </p>
         <form>
-          <label>
+          <label className="p-4 select-none">
             Deadlift:
-            <input type="number" min={0} defaultValue={0} />
+            <input
+              className="form-input ml-4"
+              name="deadlift"
+              type="number"
+              min={0}
+              value={inputLifts.deadlift}
+              required={true}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setInputLifts({
+                  ...inputLifts,
+                  deadlift: e.currentTarget.valueAsNumber,
+                });
+              }}
+            />
           </label>
-          <label>
+          <label className="p-4 select-none">
             Benchpress:
-            <input type="number" min={0} defaultValue={0} />
+            <input
+              className="form-input ml-4"
+              name="benchpress"
+              type="number"
+              min={0}
+              value={inputLifts.benchpress}
+              required={true}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setInputLifts({
+                  ...inputLifts,
+                  benchpress: e.currentTarget.valueAsNumber,
+                });
+              }}
+            />
           </label>
-          <label>
+          <label className="p-4 select-none">
             Squat:
-            <input type="number" min={0} defaultValue={0} />
+            <input
+              className="form-input ml-4"
+              name="squat"
+              type="number"
+              min={0}
+              value={inputLifts.squat}
+              required={true}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setInputLifts({
+                  ...inputLifts,
+                  squat: e.currentTarget.valueAsNumber,
+                });
+              }}
+            />
           </label>
-          <label>
+          <label className="p-4 select-none">
             Overhead:
-            <input type="number" min={0} defaultValue={0} />
+            <input
+              className="form-input ml-4"
+              name="overhead"
+              type="number"
+              min={0}
+              value={inputLifts.overhead}
+              required={true}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setInputLifts({
+                  ...inputLifts,
+                  overhead: e.currentTarget.valueAsNumber,
+                });
+              }}
+            />
           </label>
         </form>
         <button
           className="bg-blue-600 rounded shadow text-gray-100 h-fit p-2 items-center"
           onClick={async () => {
-            allLiftsMutation.mutate({
-              deadlift: getRandom(40.0, 100.0),
-              benchpress: getRandom(30.0, 40.0),
-              squat: getRandom(60.0, 80.0),
-              overhead: getRandom(20.0, 25.0),
-            });
+            allLiftsMutation.mutate(inputLifts);
           }}
         >
           Add Lifts
