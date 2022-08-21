@@ -1,7 +1,15 @@
 import type { NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
-import Head from "next/head";
-import { Mutation, useQueryClient } from "react-query";
+import {
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  Title,
+  Tooltip,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
 import { trpc } from "../utils/trpc";
 
 type TechnologyCardProps = {
@@ -24,6 +32,15 @@ const Home: NextPage = () => {
       utils.invalidateQueries(["lifts.getAll"]);
     },
   });
+
+  ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend
+  );
 
   return (
     <div className="h-screen max-h-screen">
@@ -84,11 +101,29 @@ const Home: NextPage = () => {
               >
                 Add Lifts
               </button>
-              <p>
-                {allLiftsMutation.isLoading
-                  ? "Loading..."
-                  : JSON.stringify(allLifts.data)}
-              </p>
+              {allLifts.status === "success" && (
+                <p>
+                  {allLiftsMutation.isLoading ? (
+                    "Loading..."
+                  ) : (
+                    <Bar
+                      data={{
+                        labels: Object.keys(
+                          JSON.parse(JSON.stringify(allLifts.data))
+                        ),
+                        datasets: [
+                          {
+                            label: "Personal Records",
+                            data: Object.values(
+                              JSON.parse(JSON.stringify(allLifts.data))
+                            ),
+                          },
+                        ],
+                      }}
+                    />
+                  )}
+                </p>
+              )}
             </div>
           )}
         </div>
