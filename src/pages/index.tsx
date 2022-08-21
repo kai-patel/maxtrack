@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
+import { Mutation } from "react-query";
 import { trpc } from "../utils/trpc";
 
 type TechnologyCardProps = {
@@ -9,9 +10,15 @@ type TechnologyCardProps = {
   documentation: string;
 };
 
+function getRandom(min: number, max: number): number {
+  return Math.random() * (max - min) + min;
+}
+
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
   const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }]);
+  const allLifts = trpc.useQuery(["lifts.getAll"]);
+  const allLiftsMutation = trpc.useMutation(["lifts.addLifts"]);
 
   return (
     <div className="h-screen max-h-screen">
@@ -56,9 +63,24 @@ const Home: NextPage = () => {
         </div>
         <div className="flex ">
           {status === "authenticated" && (
-            <p>
-              {session.user?.name} <img src={session.user?.image || ""} />
-            </p>
+            <div>
+              <p>
+                {session.user?.name} <img src={session.user?.image || ""} />
+              </p>
+              <button
+                onClick={async () => {
+                  allLiftsMutation.mutate({
+                    deadlift: getRandom(40.0, 100.0),
+                    benchpress: getRandom(30.0, 40.0),
+                    squat: getRandom(60.0, 80.0),
+                    overhead: getRandom(20.0, 25.0),
+                  });
+                }}
+              >
+                Add Lifts
+              </button>
+              <p>{JSON.stringify(allLifts.data)}</p>
+            </div>
           )}
         </div>
       </main>
