@@ -12,8 +12,14 @@ import {
 import { Bar } from "react-chartjs-2";
 import { trpc } from "../utils/trpc";
 import { Session } from "next-auth";
+import { useEffect } from "react";
 
 type NavBarProps = {
+  session: Session | null;
+  status: "authenticated" | "loading" | "unauthenticated";
+};
+
+type DashboardProps = {
   session: Session | null;
   status: "authenticated" | "loading" | "unauthenticated";
 };
@@ -24,23 +30,18 @@ function getRandom(min: number, max: number): number {
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
-  const utils = trpc.useContext();
   const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }]);
-  const allLifts = trpc.useQuery(["lifts.getAll"]);
-  const allLiftsMutation = trpc.useMutation(["lifts.addLifts"], {
-    onSuccess() {
-      utils.invalidateQueries(["lifts.getAll"]);
-    },
-  });
 
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend
-  );
+  useEffect(() => {
+    ChartJS.register(
+      CategoryScale,
+      LinearScale,
+      BarElement,
+      Title,
+      Tooltip,
+      Legend
+    );
+  }, []);
 
   return (
     <div className="h-screen max-h-screen">
@@ -51,50 +52,7 @@ const Home: NextPage = () => {
         <div className="flex ">
           {hello.data ? <p>{hello.data.greeting}</p> : <p>Loading..</p>}
         </div>
-        <div className="flex ">
-          {status === "authenticated" && (
-            <div>
-              <p>
-                {session.user?.name} <img src={session.user?.image || ""} />
-              </p>
-              <button
-                onClick={async () => {
-                  allLiftsMutation.mutate({
-                    deadlift: getRandom(40.0, 100.0),
-                    benchpress: getRandom(30.0, 40.0),
-                    squat: getRandom(60.0, 80.0),
-                    overhead: getRandom(20.0, 25.0),
-                  });
-                }}
-              >
-                Add Lifts
-              </button>
-              {allLifts.status === "success" && (
-                <p>
-                  {allLiftsMutation.isLoading ? (
-                    "Loading..."
-                  ) : (
-                    <Bar
-                      data={{
-                        labels: Object.keys(
-                          JSON.parse(JSON.stringify(allLifts.data))
-                        ),
-                        datasets: [
-                          {
-                            label: "Personal Records",
-                            data: Object.values(
-                              JSON.parse(JSON.stringify(allLifts.data))
-                            ),
-                          },
-                        ],
-                      }}
-                    />
-                  )}
-                </p>
-              )}
-            </div>
-          )}
-        </div>
+        <Dashboard session={session} status={status} />
       </main>
     </div>
   );
@@ -140,6 +98,63 @@ function NavBarProfileButton({ session, status }: NavBarProps) {
         >
           Login
         </button>
+      )}
+    </div>
+  );
+}
+
+function Dashboard({ session, status }: DashboardProps) {
+  const utils = trpc.useContext();
+  const allLifts = trpc.useQuery(["lifts.getAll"]);
+  const allLiftsMutation = trpc.useMutation(["lifts.addLifts"], {
+    onSuccess() {
+      utils.invalidateQueries(["lifts.getAll"]);
+    },
+  });
+
+  return (
+    <div className="flex ">
+      {status === "authenticated" && session && (
+        <div>
+          <p>
+            {session.user?.name} <img src={session.user?.image || ""} />
+          </p>
+          <button
+            onClick={async () => {
+              allLiftsMutation.mutate({
+                deadlift: getRandom(40.0, 100.0),
+                benchpress: getRandom(30.0, 40.0),
+                squat: getRandom(60.0, 80.0),
+                overhead: getRandom(20.0, 25.0),
+              });
+            }}
+          >
+            Add Lifts
+          </button>
+          {allLifts.status === "success" && (
+            <p>
+              {allLiftsMutation.isLoading ? (
+                "Loading..."
+              ) : (
+                <Bar
+                  data={{
+                    labels: Object.keys(
+                      JSON.parse(JSON.stringify(allLifts.data))
+                    ),
+                    datasets: [
+                      {
+                        label: "Personal Records",
+                        data: Object.values(
+                          JSON.parse(JSON.stringify(allLifts.data))
+                        ),
+                      },
+                    ],
+                  }}
+                />
+              )}
+            </p>
+          )}
+        </div>
       )}
     </div>
   );
