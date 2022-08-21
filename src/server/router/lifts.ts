@@ -8,6 +8,12 @@ export const protectedLiftsRouter = createProtectedRouter()
         where: {
           userId: ctx.session.user?.id,
         },
+        select: {
+          deadlift: true,
+          benchpress: true,
+          squat: true,
+          overhead: true,
+        },
       });
     },
   })

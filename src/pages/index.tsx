@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
-import { Mutation } from "react-query";
+import { Mutation, useQueryClient } from "react-query";
 import { trpc } from "../utils/trpc";
 
 type TechnologyCardProps = {
@@ -16,9 +16,14 @@ function getRandom(min: number, max: number): number {
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
+  const utils = trpc.useContext();
   const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }]);
   const allLifts = trpc.useQuery(["lifts.getAll"]);
-  const allLiftsMutation = trpc.useMutation(["lifts.addLifts"]);
+  const allLiftsMutation = trpc.useMutation(["lifts.addLifts"], {
+    onSuccess() {
+      utils.invalidateQueries(["lifts.getAll"]);
+    },
+  });
 
   return (
     <div className="h-screen max-h-screen">
@@ -79,7 +84,11 @@ const Home: NextPage = () => {
               >
                 Add Lifts
               </button>
-              <p>{JSON.stringify(allLifts.data)}</p>
+              <p>
+                {allLiftsMutation.isLoading
+                  ? "Loading..."
+                  : JSON.stringify(allLifts.data)}
+              </p>
             </div>
           )}
         </div>
