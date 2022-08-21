@@ -30,7 +30,6 @@ function getRandom(min: number, max: number): number {
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
-  const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }]);
 
   useEffect(() => {
     ChartJS.register(
@@ -49,9 +48,6 @@ const Home: NextPage = () => {
         <NavBar session={session} status={status} />
       </header>
       <main className="relative container mx-auto flex flex-col items-center justify-center max-h-[95%] p-4">
-        <div className="flex ">
-          {hello.data ? <p>{hello.data.greeting}</p> : <p>Loading..</p>}
-        </div>
         <Dashboard session={session} status={status} />
       </main>
     </div>
