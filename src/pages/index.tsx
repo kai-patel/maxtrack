@@ -121,13 +121,15 @@ function Dashboard({ session, status }: DashboardProps) {
     overhead: 0,
   });
 
-  if (status !== "authenticated" || !session)
+  if (status !== "authenticated" || !session) {
+    utils.cancelQuery(["lifts.getAll"]);
     return (
       <p className="font-bold text-2xl text-center w-full h-full p-10 bg-gray-100">
         You are not logged in. Whether you are a new or an existing user, please
         sign in to use this website.
       </p>
     );
+  }
 
   return (
     <div className="flex flex-col w-full h-full bg-gray-800">
