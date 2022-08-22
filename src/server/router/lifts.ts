@@ -93,7 +93,10 @@ export const protectedLiftsRouter = createProtectedRouter()
           maxLifts: {
             upsert: {
               update: {
-                ...input,
+                deadlift: Math.max(input.deadlift, oldLifts.deadlift),
+                benchpress: Math.max(input.benchpress, oldLifts.benchpress),
+                squat: Math.max(input.squat, oldLifts.squat),
+                overhead: Math.max(input.overhead, oldLifts.overhead),
                 deadliftHistory: {
                   push: input.deadlift,
                 },
