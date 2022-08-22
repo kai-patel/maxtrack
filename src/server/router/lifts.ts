@@ -6,13 +6,61 @@ export const protectedLiftsRouter = createProtectedRouter()
     async resolve({ ctx }) {
       return await ctx.prisma.maxLifts.findFirst({
         where: {
-          userId: ctx.session.user?.id,
+          userId: ctx.session.user.id,
         },
         select: {
           deadlift: true,
           benchpress: true,
           squat: true,
           overhead: true,
+        },
+      });
+    },
+  })
+  .query("allDeadlift", {
+    async resolve({ ctx }) {
+      return await ctx.prisma.maxLifts.findFirst({
+        where: {
+          userId: ctx.session.user.id,
+        },
+        select: {
+          deadliftHistory: true,
+        },
+      });
+    },
+  })
+  .query("allBenchpress", {
+    async resolve({ ctx }) {
+      return await ctx.prisma.maxLifts.findFirst({
+        where: {
+          userId: ctx.session.user.id,
+        },
+        select: {
+          benchpressHistory: true,
+        },
+      });
+    },
+  })
+  .query("allSquat", {
+    async resolve({ ctx }) {
+      return await ctx.prisma.maxLifts.findFirst({
+        where: {
+          userId: ctx.session.user.id,
+        },
+        select: {
+          squatHistory: true,
+        },
+      });
+    },
+  })
+  .query("allOverhead", {
+    async resolve({ ctx }) {
+      return await ctx.prisma.maxLifts.findFirst({
+        where: {
+          userId: ctx.session.user.id,
+        },
+        select: {
+          overheadHistory: true,
         },
       });
     },
@@ -25,24 +73,52 @@ export const protectedLiftsRouter = createProtectedRouter()
       overhead: z.number().min(0),
     }),
     async resolve({ ctx, input }) {
-      let sessionUser = await ctx.prisma.user.update({
+      let oldLifts = await ctx.prisma.maxLifts.findFirstOrThrow({
         where: {
-          id: ctx.session.user?.id,
+          userId: ctx.session.user.id,
+        },
+        select: {
+          deadlift: true,
+          benchpress: true,
+          squat: true,
+          overhead: true,
+        },
+      });
+
+      let newLifts = await ctx.prisma.user.update({
+        where: {
+          id: ctx.session.user.id,
         },
         data: {
           maxLifts: {
             upsert: {
               update: {
                 ...input,
+                deadliftHistory: {
+                  push: input.deadlift,
+                },
+                benchpressHistory: {
+                  push: input.benchpress,
+                },
+                squatHistory: {
+                  push: input.squat,
+                },
+                overheadHistory: {
+                  push: input.overhead,
+                },
               },
               create: {
                 ...input,
+                deadliftHistory: input.deadlift,
+                benchpressHistory: input.benchpress,
+                squatHistory: input.squat,
+                overheadHistory: input.overhead,
               },
             },
           },
         },
       });
 
-      return sessionUser;
+      return newLifts;
     },
   });
