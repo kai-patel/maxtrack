@@ -157,7 +157,7 @@ function Dashboard({ session, status }: DashboardProps) {
 
   return (
     <div className="flex flex-col w-full h-full bg-gray-800">
-      <div className="flex h-1/2 bg-gray-100 border border-gray-900 shadow rounded m-4 p-4 justify-between">
+      <div className="flex h-fit bg-gray-100 border border-gray-900 shadow rounded m-4 p-4 justify-between items-center">
         <p className="border rounded h-fit p-4 shadow">
           {session.user?.name} <img src={session.user?.image || ""} />
         </p>
