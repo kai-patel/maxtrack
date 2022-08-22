@@ -119,6 +119,7 @@ function NavBarProfileButton({ session, status }: NavBarProps) {
 function Dashboard({ session, status }: DashboardProps) {
   const utils = trpc.useContext();
   const allLifts = trpc.useQuery(["lifts.getAll"]);
+  const histories = trpc.useQuery(["lifts.getHistories"]);
   const allLiftsMutation = trpc.useMutation(["lifts.addLifts"], {
     onSuccess() {
       utils.invalidateQueries(["lifts.getAll"]);
@@ -140,6 +141,7 @@ function Dashboard({ session, status }: DashboardProps) {
 
   if (status !== "authenticated" || !session) {
     utils.cancelQuery(["lifts.getAll"]);
+    utils.cancelQuery(["lifts.getHistories"]);
     return (
       <p className="font-bold text-2xl text-center w-full h-full p-10 bg-gray-100">
         You are not logged in. Whether you are a new or an existing user, please

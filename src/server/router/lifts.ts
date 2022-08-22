@@ -17,6 +17,21 @@ export const protectedLiftsRouter = createProtectedRouter()
       });
     },
   })
+  .query("getHistories", {
+    async resolve({ ctx }) {
+      return await ctx.prisma.maxLifts.findFirst({
+        where: {
+          userId: ctx.session.user.id,
+        },
+        select: {
+          deadliftHistory: true,
+          benchpressHistory: true,
+          squatHistory: true,
+          overheadHistory: true,
+        },
+      });
+    },
+  })
   .query("allDeadlift", {
     async resolve({ ctx }) {
       return await ctx.prisma.maxLifts.findFirst({
