@@ -15,6 +15,7 @@ import { Bar, Line } from "react-chartjs-2";
 import { trpc } from "../utils/trpc";
 import { Session } from "next-auth";
 import React, { SetStateAction, useEffect, useState } from "react";
+import _ from "lodash";
 
 type NavBarProps = {
   session: Session | null;
@@ -137,8 +138,6 @@ function Dashboard({ session, status }: DashboardProps) {
     },
   });
 
-  histories && histories.data && console.log(new Object(histories.data));
-
   const [inputLifts, setInputLifts] = useState({
     deadlift: 0,
     benchpress: 0,
@@ -180,43 +179,45 @@ function Dashboard({ session, status }: DashboardProps) {
           histories.status === "success" &&
           histories.data && (
             <div className="flex flex-row flex-1 flex-wrap justify-around p-0 m-0">
-              {Object.entries(histories.data).map(([liftName, liftHistory]) => (
-                <div key={liftName} className="">
-                  <Line
-                    height="256px"
-                    options={{
-                      responsive: true,
-                      aspectRatio: 1,
-                      maintainAspectRatio: false,
-                      plugins: {
-                        title: {
-                          display: true,
-                          text:
-                            liftName.charAt(0).toUpperCase() +
-                            liftName.slice(1, -7),
-                        },
-                      },
-                      scales: {
-                        y: {
+              {_.map(histories.data, (liftHistory, liftName) => {
+                return (
+                  <div key={liftName} className="">
+                    <Line
+                      height="256px"
+                      options={{
+                        responsive: true,
+                        aspectRatio: 1,
+                        maintainAspectRatio: false,
+                        plugins: {
                           title: {
                             display: true,
-                            text: "Weight/kg",
+                            text:
+                              liftName.charAt(0).toUpperCase() +
+                              liftName.slice(1, -7),
                           },
                         },
-                      },
-                    }}
-                    data={{
-                      labels: Object.keys(liftHistory),
-                      datasets: [
-                        {
-                          label: "Weight",
-                          data: Object.values(liftHistory),
+                        scales: {
+                          y: {
+                            title: {
+                              display: true,
+                              text: "Weight/kg",
+                            },
+                          },
                         },
-                      ],
-                    }}
-                  />
-                </div>
-              ))}
+                      }}
+                      data={{
+                        labels: Object.keys(liftHistory),
+                        datasets: [
+                          {
+                            label: "Weight",
+                            data: Object.values(liftHistory),
+                          },
+                        ],
+                      }}
+                    />
+                  </div>
+                );
+              })}
             </div>
           )
         )}
