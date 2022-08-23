@@ -151,7 +151,7 @@ function Dashboard({ session, status }: DashboardProps) {
 
   return (
     <div className="flex flex-col w-full h-full bg-gray-800">
-      <div className="flex h-fit bg-gray-100 border border-gray-900 shadow rounded m-4 p-4 justify-between items-center">
+      <div className="flex flex-row flex-wrap h-fit bg-gray-100 border border-gray-900 shadow rounded m-4 p-4 justify-between items-center">
         <p className="border rounded h-fit p-4 shadow">
           {session.user?.name} <img src={session.user?.image || ""} />
         </p>
@@ -174,7 +174,7 @@ function Dashboard({ session, status }: DashboardProps) {
 
 function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
   return (
-    <form>
+    <form className="flex flex-auto flex-wrap">
       <label className="p-4 select-none">
         Deadlift:
         <input
