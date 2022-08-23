@@ -12,11 +12,12 @@ export function NavBar({ session, status }: NavBarProps) {
 }
 
 function NavBarProfileButton({ session, status }: NavBarProps) {
+  const buttonStyle = "text-gray-100 justify-end hover:underline";
   return (
     <div className="flex">
       {status === "authenticated" && session ? (
         <>
-          <button className="flex text-gray-100 justify-end items-center hover:underline">
+          <button className={`flex items-center ${buttonStyle}`}>
             <p className="text-gray-100">{session.user?.name}</p>
             <img
               className="aspect-square object-scale-down mr-4 ml-4 rounded-full"
@@ -26,18 +27,12 @@ function NavBarProfileButton({ session, status }: NavBarProps) {
               referrerPolicy="no-referrer"
             />
           </button>
-          <button
-            className="text-gray-100 justify-end hover:underline"
-            onClick={() => signOut()}
-          >
+          <button className={buttonStyle} onClick={() => signOut()}>
             Sign Out
           </button>
         </>
       ) : (
-        <button
-          className="text-gray-100 justify-end hover:underline"
-          onClick={() => signIn()}
-        >
+        <button className={buttonStyle} onClick={() => signIn()}>
           Login
         </button>
       )}
