@@ -124,7 +124,6 @@ function NavBarProfileButton({ session, status }: NavBarProps) {
 function Dashboard({ session, status }: DashboardProps) {
   const utils = trpc.useContext();
   const allLifts = trpc.useQuery(["lifts.getAll"]);
-  const histories = trpc.useQuery(["lifts.getHistories"]);
   const allLiftsMutation = trpc.useMutation(["lifts.addLifts"], {
     onSuccess() {
       utils.invalidateQueries(["lifts.getAll"]);
@@ -172,55 +171,8 @@ function Dashboard({ session, status }: DashboardProps) {
           Add Lifts
         </button>
       </div>
-      <div className="flex flex-wrap max-h-fit bg-green-200 border border-gray-900 shadow rounded m-4 p-4">
-        {histories.isLoading ? (
-          <p>Loading...</p>
-        ) : (
-          histories.status === "success" &&
-          histories.data && (
-            <div className="flex flex-row flex-1 flex-wrap justify-around p-0 m-0">
-              {_.map(histories.data, (liftHistory, liftName) => {
-                return (
-                  <div key={liftName} className="">
-                    <Line
-                      height="256px"
-                      options={{
-                        responsive: true,
-                        aspectRatio: 1,
-                        maintainAspectRatio: false,
-                        plugins: {
-                          title: {
-                            display: true,
-                            text:
-                              liftName.charAt(0).toUpperCase() +
-                              liftName.slice(1, -7),
-                          },
-                        },
-                        scales: {
-                          y: {
-                            title: {
-                              display: true,
-                              text: "Weight/kg",
-                            },
-                          },
-                        },
-                      }}
-                      data={{
-                        labels: Object.keys(liftHistory),
-                        datasets: [
-                          {
-                            label: "Weight",
-                            data: Object.values(liftHistory),
-                          },
-                        ],
-                      }}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          )
-        )}
+      <div className="flex flex-row flex-wrap justify-around max-h-fit bg-green-200 border border-gray-900 shadow rounded m-4 p-4">
+        <HistoricalPlots />
       </div>
     </div>
   );
@@ -298,5 +250,56 @@ function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
         />
       </label>
     </form>
+  );
+}
+
+function HistoricalPlots() {
+  const histories = trpc.useQuery(["lifts.getHistories"]);
+
+  if (histories.isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  return (
+    <>
+      {_.map(histories.data, (liftHistory, liftName) => {
+        return (
+          <div key={liftName} className="border-4">
+            <Line
+              height="256px"
+              options={{
+                responsive: true,
+                aspectRatio: 1,
+                maintainAspectRatio: false,
+                plugins: {
+                  title: {
+                    display: true,
+                    text:
+                      liftName.charAt(0).toUpperCase() + liftName.slice(1, -7),
+                  },
+                },
+                scales: {
+                  y: {
+                    title: {
+                      display: true,
+                      text: "Weight/kg",
+                    },
+                  },
+                },
+              }}
+              data={{
+                labels: Object.keys(liftHistory),
+                datasets: [
+                  {
+                    label: "Weight",
+                    data: Object.values(liftHistory),
+                  },
+                ],
+              }}
+            />
+          </div>
+        );
+      })}
+    </>
   );
 }
