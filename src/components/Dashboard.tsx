@@ -58,6 +58,7 @@ export function Dashboard({ session, status }: DashboardProps) {
     </div>
   );
 }
+
 function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
   return (
     <form className="flex flex-auto flex-wrap">
@@ -128,6 +129,7 @@ function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
     </form>
   );
 }
+
 function HistoricalPlots() {
   const histories = trpc.useQuery(["lifts.getHistories"]);
 
