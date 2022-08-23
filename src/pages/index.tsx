@@ -44,10 +44,6 @@ type LiftsInputFormProps = {
   >;
 };
 
-function getRandom(min: number, max: number): number {
-  return Math.random() * (max - min) + min;
-}
-
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
 
@@ -123,10 +119,8 @@ function NavBarProfileButton({ session, status }: NavBarProps) {
 
 function Dashboard({ session, status }: DashboardProps) {
   const utils = trpc.useContext();
-  const allLifts = trpc.useQuery(["lifts.getAll"]);
   const allLiftsMutation = trpc.useMutation(["lifts.addLifts"], {
     onSuccess() {
-      utils.invalidateQueries(["lifts.getAll"]);
       utils.invalidateQueries(["lifts.getHistories"]);
       setInputLifts({
         deadlift: 0,
@@ -188,7 +182,7 @@ function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
           name="deadlift"
           type="number"
           min={0}
-          value={inputLifts.deadlift}
+          value={inputLifts.deadlift || 0}
           required={true}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setInputLifts({
@@ -205,7 +199,7 @@ function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
           name="benchpress"
           type="number"
           min={0}
-          value={inputLifts.benchpress}
+          value={inputLifts.benchpress || 0}
           required={true}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setInputLifts({
@@ -222,7 +216,7 @@ function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
           name="squat"
           type="number"
           min={0}
-          value={inputLifts.squat}
+          value={inputLifts.squat || 0}
           required={true}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setInputLifts({
@@ -239,7 +233,7 @@ function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
           name="overhead"
           type="number"
           min={0}
-          value={inputLifts.overhead}
+          value={inputLifts.overhead || 0}
           required={true}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setInputLifts({
