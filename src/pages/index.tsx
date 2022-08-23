@@ -137,6 +137,8 @@ function Dashboard({ session, status }: DashboardProps) {
     },
   });
 
+  histories && histories.data && console.log(new Object(histories.data));
+
   const [inputLifts, setInputLifts] = useState({
     deadlift: 0,
     benchpress: 0,
@@ -171,108 +173,53 @@ function Dashboard({ session, status }: DashboardProps) {
           Add Lifts
         </button>
       </div>
-      <div className="flex h-2/5 bg-green-200 border border-gray-900 shadow rounded m-4 p-4">
-        {allLifts.status === "success" &&
-          (allLiftsMutation.isLoading ? (
-            <p>Loading...</p>
-          ) : (
-            <div className="flex flex-row w-screen justify-around">
-              <div className="">
-                <Line
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                      title: {
-                        display: true,
-                        text: "Deadlift",
+      <div className="flex flex-wrap max-h-fit bg-green-200 border border-gray-900 shadow rounded m-4 p-4">
+        {histories.isLoading ? (
+          <p>Loading...</p>
+        ) : (
+          histories.status === "success" &&
+          histories.data && (
+            <div className="flex flex-row flex-1 flex-wrap justify-around p-0 m-0">
+              {Object.entries(histories.data).map(([liftName, liftHistory]) => (
+                <div key={liftName} className="">
+                  <Line
+                    height="256px"
+                    options={{
+                      responsive: true,
+                      aspectRatio: 1,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        title: {
+                          display: true,
+                          text:
+                            liftName.charAt(0).toUpperCase() +
+                            liftName.slice(1, -7),
+                        },
                       },
-                    },
-                  }}
-                  data={{
-                    labels: Object.keys(
-                      JSON.parse(
-                        JSON.stringify(histories?.data?.deadliftHistory)
-                      )
-                    ),
-                    datasets: [
-                      {
-                        label: "Personal Records",
-                        data: Object.values(
-                          JSON.parse(
-                            JSON.stringify(histories?.data?.deadliftHistory)
-                          )
-                        ),
+                      scales: {
+                        y: {
+                          title: {
+                            display: true,
+                            text: "Weight/kg",
+                          },
+                        },
                       },
-                    ],
-                  }}
-                />
-              </div>
-              <div className="">
-                <Bar
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                  }}
-                  data={{
-                    labels: Object.keys(
-                      JSON.parse(JSON.stringify(allLifts.data))
-                    ),
-                    datasets: [
-                      {
-                        label: "Personal Records",
-                        data: Object.values(
-                          JSON.parse(JSON.stringify(allLifts.data))
-                        ),
-                      },
-                    ],
-                  }}
-                />
-              </div>
-              <div className="">
-                <Bar
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                  }}
-                  data={{
-                    labels: Object.keys(
-                      JSON.parse(JSON.stringify(allLifts.data))
-                    ),
-                    datasets: [
-                      {
-                        label: "Personal Records",
-                        data: Object.values(
-                          JSON.parse(JSON.stringify(allLifts.data))
-                        ),
-                      },
-                    ],
-                  }}
-                />
-              </div>
-              <div className="">
-                <Bar
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                  }}
-                  data={{
-                    labels: Object.keys(
-                      JSON.parse(JSON.stringify(allLifts.data))
-                    ),
-                    datasets: [
-                      {
-                        label: "Personal Records",
-                        data: Object.values(
-                          JSON.parse(JSON.stringify(allLifts.data))
-                        ),
-                      },
-                    ],
-                  }}
-                />
-              </div>
+                    }}
+                    data={{
+                      labels: Object.keys(liftHistory),
+                      datasets: [
+                        {
+                          label: "Weight",
+                          data: Object.values(liftHistory),
+                        },
+                      ],
+                    }}
+                  />
+                </div>
+              ))}
             </div>
-          ))}
+          )
+        )}
       </div>
     </div>
   );
