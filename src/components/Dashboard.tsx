@@ -112,7 +112,7 @@ function HistoricalPlots() {
                 plugins: {
                   title: {
                     display: true,
-                    text: name.charAt(0).toUpperCase() + name.slice(1, -7),
+                    text: _.capitalize(name) + name.slice(1, -7),
                   },
                 },
                 scales: {
