@@ -75,7 +75,7 @@ function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
                   name={lift}
                   type="number"
                   min={0}
-                  value={liftValue || 0}
+                  value={liftValue || ""}
                   required={true}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     let prevLifts = {
