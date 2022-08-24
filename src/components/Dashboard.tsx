@@ -62,29 +62,31 @@ export function Dashboard({ session, status }: DashboardProps) {
 function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
   return (
     <form className="flex flex-auto flex-wrap">
-      {_.map(inputLifts, (liftValue, lift) => {
-        return (
-          <label key={lift} className="p-4 select-none">
-            {`${_.capitalize(lift)}:`}
-            <input
-              className="form-input ml-4"
-              name={lift}
-              type="number"
-              min={0}
-              value={liftValue || 0}
-              required={true}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                let prevLifts = {
-                  ...inputLifts,
-                };
-                prevLifts[lift] = e.currentTarget.valueAsNumber;
-                console.log(prevLifts);
-                setInputLifts(prevLifts);
-              }}
-            />
-          </label>
-        );
-      })}
+      {_.map(
+        inputLifts as { [key: string]: number },
+        (liftValue, lift, inputLiftsCast) => {
+          return (
+            <label key={lift} className="p-4 select-none">
+              {`${_.capitalize(lift)}:`}
+              <input
+                className="form-input ml-4"
+                name={lift}
+                type="number"
+                min={0}
+                value={liftValue || 0}
+                required={true}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  let prevLifts = {
+                    ...inputLiftsCast,
+                  };
+                  prevLifts[lift] = e.currentTarget.valueAsNumber;
+                  setInputLifts(prevLifts as typeof inputLifts);
+                }}
+              />
+            </label>
+          );
+        }
+      )}
     </form>
   );
 }
