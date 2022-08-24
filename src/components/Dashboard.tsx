@@ -120,6 +120,9 @@ function HistoricalPlots() {
                   title: {
                     display: true,
                     text: _.capitalize(name).slice(0, -7),
+                    font: {
+                      size: 14,
+                    },
                   },
                 },
                 scales: {
@@ -127,6 +130,10 @@ function HistoricalPlots() {
                     title: {
                       display: true,
                       text: "Weight/kg",
+                      font: {
+                        size: 14,
+                        weight: "bolder",
+                      },
                     },
                     min: 0,
                   },
