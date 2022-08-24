@@ -1,8 +1,8 @@
-import { Line } from "react-chartjs-2";
 import { trpc } from "../utils/trpc";
 import React, { useState } from "react";
 import _ from "lodash";
 import { DashboardProps, LiftsInputFormProps } from "../pages/index";
+import { Line } from "react-chartjs-2";
 
 export function Dashboard({ session, status }: DashboardProps) {
   const utils = trpc.useContext();
@@ -62,70 +62,29 @@ export function Dashboard({ session, status }: DashboardProps) {
 function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
   return (
     <form className="flex flex-auto flex-wrap">
-      <label className="p-4 select-none">
-        Deadlift:
-        <input
-          className="form-input ml-4"
-          name="deadlift"
-          type="number"
-          min={0}
-          value={inputLifts.deadlift || 0}
-          required={true}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setInputLifts({
-              ...inputLifts,
-              deadlift: e.currentTarget.valueAsNumber,
-            });
-          }} />
-      </label>
-      <label className="p-4 select-none">
-        Benchpress:
-        <input
-          className="form-input ml-4"
-          name="benchpress"
-          type="number"
-          min={0}
-          value={inputLifts.benchpress || 0}
-          required={true}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setInputLifts({
-              ...inputLifts,
-              benchpress: e.currentTarget.valueAsNumber,
-            });
-          }} />
-      </label>
-      <label className="p-4 select-none">
-        Squat:
-        <input
-          className="form-input ml-4"
-          name="squat"
-          type="number"
-          min={0}
-          value={inputLifts.squat || 0}
-          required={true}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setInputLifts({
-              ...inputLifts,
-              squat: e.currentTarget.valueAsNumber,
-            });
-          }} />
-      </label>
-      <label className="p-4 select-none">
-        Overhead:
-        <input
-          className="form-input ml-4"
-          name="overhead"
-          type="number"
-          min={0}
-          value={inputLifts.overhead || 0}
-          required={true}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setInputLifts({
-              ...inputLifts,
-              overhead: e.currentTarget.valueAsNumber,
-            });
-          }} />
-      </label>
+      {_.map(inputLifts, (liftValue, lift) => {
+        return (
+          <label key={lift} className="p-4 select-none">
+            {`${_.capitalize(lift)}:`}
+            <input
+              className="form-input ml-4"
+              name={lift}
+              type="number"
+              min={0}
+              value={liftValue || 0}
+              required={true}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                let prevLifts = {
+                  ...inputLifts,
+                };
+                prevLifts[lift] = e.currentTarget.valueAsNumber;
+                console.log(prevLifts);
+                setInputLifts(prevLifts);
+              }}
+            />
+          </label>
+        );
+      })}
     </form>
   );
 }
@@ -133,15 +92,15 @@ function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
 function HistoricalPlots() {
   const histories = trpc.useQuery(["lifts.getHistories"]);
 
-  if (histories.isLoading) {
+  if (histories.isLoading || !histories.data) {
     return <p>Loading...</p>;
   }
 
   return (
     <>
-      {_.map(histories.data, (liftHistory, liftName) => {
+      {_.map(histories.data, (liftHistory, name) => {
         return (
-          <div key={liftName} className="border-4">
+          <div key={name} className="border-4">
             <Line
               height="256px"
               options={{
@@ -151,7 +110,7 @@ function HistoricalPlots() {
                 plugins: {
                   title: {
                     display: true,
-                    text: liftName.charAt(0).toUpperCase() + liftName.slice(1, -7),
+                    text: name.charAt(0).toUpperCase() + name.slice(1, -7),
                   },
                 },
                 scales: {
@@ -171,7 +130,8 @@ function HistoricalPlots() {
                     data: Object.values(liftHistory),
                   },
                 ],
-              }} />
+              }}
+            />
           </div>
         );
       })}
