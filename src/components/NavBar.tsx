@@ -4,12 +4,12 @@ import { NavBarProps } from "../pages/index";
 
 export function NavBar({ session, status }: NavBarProps) {
   return (
-    <nav className="flex bg-gray-600 min-w-screen m-0 p-4 h-[5%] justify-between items-center shadow">
+    <nav className="flex bg-gray-600 min-w-screen m-0 px-4 h-[5%] min-h-[5%] max-h-[5%] justify-between items-center shadow">
       <p className="font-bold text-gray-100 select-none text-lg">MaxTrack</p>
       <span className="flex items-center">
-        <p className="text-gray-100 select-none hover:underline p-4">
+        <a className="text-gray-100 select-none hover:underline p-4" href="/">
           Dashboard
-        </p>
+        </a>
         <NavBarProfileButton session={session} status={status} />
       </span>
     </nav>
