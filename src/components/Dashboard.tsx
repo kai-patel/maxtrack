@@ -67,11 +67,8 @@ function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
           inputLifts as { [key: string]: number },
           (liftValue, lift, inputLiftsCast) => {
             return (
-              <div>
-                <label
-                  key={lift}
-                  className="flex justify-evenly p-2 select-none w-full max-w-1/4"
-                >
+              <div key={lift}>
+                <label className="flex justify-evenly p-2 select-none w-full max-w-1/4">
                   {`${_.capitalize(lift)}:`}
                 </label>
                 <input
