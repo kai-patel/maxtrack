@@ -57,6 +57,8 @@ const Home: NextPage = () => {
       PointElement,
       LineElement
     );
+
+    ChartJS.defaults.backgroundColor = "#a5b8a7";
   }, []);
 
   return (
