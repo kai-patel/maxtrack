@@ -22,8 +22,9 @@ function NavBarProfileButton({ session, status }: NavBarProps) {
     <div className="flex">
       {status === "authenticated" && session ? (
         <>
-          <button
+          <a
             className={`flex items-center ${buttonStyle} [&>img]:hover:border-2 [&>img]:hover:border-emerald-500`}
+            href="/profile"
           >
             <p className="text-gray-100">{session.user?.name}</p>
             <img
@@ -33,7 +34,7 @@ function NavBarProfileButton({ session, status }: NavBarProps) {
               width="32"
               referrerPolicy="no-referrer"
             />
-          </button>
+          </a>
           <button className={buttonStyle} onClick={() => signOut()}>
             Sign Out
           </button>
