@@ -26,7 +26,6 @@ export function Dashboard({ session, status }: DashboardProps) {
   });
 
   if (status !== "authenticated" || !session) {
-    utils.cancelQuery(["lifts.getAll"]);
     utils.cancelQuery(["lifts.getHistories"]);
     return (
       <p className="font-bold text-2xl text-center w-full h-full p-10 bg-gray-100">
@@ -98,8 +97,12 @@ function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
 function HistoricalPlots() {
   const histories = trpc.useQuery(["lifts.getHistories"]);
 
-  if (histories.isLoading || !histories.data) {
+  if (histories.isLoading) {
     return <p>Loading...</p>;
+  }
+
+  if (!histories.data) {
+    return <p>No data</p>;
   }
 
   return (

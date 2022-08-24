@@ -88,7 +88,7 @@ export const protectedLiftsRouter = createProtectedRouter()
       overhead: z.number().min(0),
     }),
     async resolve({ ctx, input }) {
-      let oldLifts = await ctx.prisma.maxLifts.findFirstOrThrow({
+      let oldLifts = await ctx.prisma.maxLifts.findFirst({
         where: {
           userId: ctx.session.user.id,
         },
@@ -108,10 +108,13 @@ export const protectedLiftsRouter = createProtectedRouter()
           maxLifts: {
             upsert: {
               update: {
-                deadlift: Math.max(input.deadlift, oldLifts.deadlift),
-                benchpress: Math.max(input.benchpress, oldLifts.benchpress),
-                squat: Math.max(input.squat, oldLifts.squat),
-                overhead: Math.max(input.overhead, oldLifts.overhead),
+                deadlift: Math.max(input.deadlift, oldLifts?.deadlift || 0),
+                benchpress: Math.max(
+                  input.benchpress,
+                  oldLifts?.benchpress || 0
+                ),
+                squat: Math.max(input.squat, oldLifts?.squat || 0),
+                overhead: Math.max(input.overhead, oldLifts?.overhead || 0),
                 deadliftHistory: {
                   push: input.deadlift,
                 },
@@ -138,5 +141,14 @@ export const protectedLiftsRouter = createProtectedRouter()
       });
 
       return newLifts;
+    },
+  })
+  .mutation("removeLifts", {
+    async resolve({ ctx }) {
+      return await ctx.prisma.maxLifts.delete({
+        where: {
+          userId: ctx.session.user.id,
+        },
+      });
     },
   });
