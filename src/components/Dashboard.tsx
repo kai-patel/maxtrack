@@ -128,6 +128,7 @@ function HistoricalPlots() {
                       display: true,
                       text: "Weight/kg",
                     },
+                    min: 0,
                   },
                 },
               }}
