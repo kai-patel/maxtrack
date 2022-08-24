@@ -72,7 +72,7 @@ function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
                   {`${_.capitalize(lift)}:`}
                 </label>
                 <input
-                  className="form-input"
+                  className="form-input text-center"
                   name={lift}
                   type="number"
                   min={0}
