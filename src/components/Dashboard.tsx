@@ -44,7 +44,7 @@ export function Dashboard({ session, status }: DashboardProps) {
         </p>
         <LiftsInputForm setInputLifts={setInputLifts} inputLifts={inputLifts} />
         <button
-          className="bg-blue-600 rounded shadow text-gray-100 h-fit p-2 items-center border-2"
+          className="bg-blue-600 rounded shadow text-gray-100 h-fit p-2 items-center"
           onClick={async () => {
             allLiftsMutation.mutate(inputLifts);
           }}
@@ -106,7 +106,7 @@ function HistoricalPlots() {
     <>
       {_.map(histories.data, (liftHistory, name) => {
         return (
-          <div key={name} className="border-4">
+          <div key={name} className="">
             <Line
               height="256px"
               options={{
