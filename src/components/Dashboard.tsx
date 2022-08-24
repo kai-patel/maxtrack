@@ -38,13 +38,13 @@ export function Dashboard({ session, status }: DashboardProps) {
 
   return (
     <div className="flex flex-col w-full h-full bg-gray-800">
-      <div className="flex flex-row flex-wrap h-fit bg-gray-100 border border-gray-900 shadow rounded m-4 p-4 justify-between items-center">
+      <div className="flex flex-row flex-shrink h-fit bg-gray-100 border border-gray-900 shadow rounded m-4 p-4 justify-evenly items-center">
         <p className="border rounded h-fit p-4 shadow">
           {session.user?.name} <img src={session.user?.image || ""} />
         </p>
         <LiftsInputForm setInputLifts={setInputLifts} inputLifts={inputLifts} />
         <button
-          className="bg-blue-600 rounded shadow text-gray-100 h-fit p-2 items-center"
+          className="bg-blue-600 rounded shadow text-gray-100 h-fit p-2 items-center border-2"
           onClick={async () => {
             allLiftsMutation.mutate(inputLifts);
           }}
@@ -61,32 +61,39 @@ export function Dashboard({ session, status }: DashboardProps) {
 
 function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
   return (
-    <form className="flex flex-auto flex-wrap">
-      {_.map(
-        inputLifts as { [key: string]: number },
-        (liftValue, lift, inputLiftsCast) => {
-          return (
-            <label key={lift} className="p-4 select-none">
-              {`${_.capitalize(lift)}:`}
-              <input
-                className="form-input ml-4"
-                name={lift}
-                type="number"
-                min={0}
-                value={liftValue || 0}
-                required={true}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  let prevLifts = {
-                    ...inputLiftsCast,
-                  };
-                  prevLifts[lift] = e.currentTarget.valueAsNumber;
-                  setInputLifts(prevLifts as typeof inputLifts);
-                }}
-              />
-            </label>
-          );
-        }
-      )}
+    <form className="flex flex-auto place-content-center">
+      <div className="flex flex-wrap place-content-left">
+        {_.map(
+          inputLifts as { [key: string]: number },
+          (liftValue, lift, inputLiftsCast) => {
+            return (
+              <div>
+                <label
+                  key={lift}
+                  className="flex justify-evenly p-2 select-none w-full max-w-1/4"
+                >
+                  {`${_.capitalize(lift)}:`}
+                </label>
+                <input
+                  className="form-input"
+                  name={lift}
+                  type="number"
+                  min={0}
+                  value={liftValue || 0}
+                  required={true}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    let prevLifts = {
+                      ...inputLiftsCast,
+                    };
+                    prevLifts[lift] = e.currentTarget.valueAsNumber;
+                    setInputLifts(prevLifts as typeof inputLifts);
+                  }}
+                />
+              </div>
+            );
+          }
+        )}
+      </div>
     </form>
   );
 }
@@ -112,7 +119,7 @@ function HistoricalPlots() {
                 plugins: {
                   title: {
                     display: true,
-                    text: _.capitalize(name) + name.slice(1, -7),
+                    text: _.capitalize(name).slice(0, -7),
                   },
                 },
                 scales: {
