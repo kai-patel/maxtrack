@@ -6,17 +6,6 @@ import { Line } from "react-chartjs-2";
 
 export function Dashboard({ session, status }: DashboardProps) {
   const utils = trpc.useContext();
-  const allLiftsMutation = trpc.useMutation(["lifts.addLifts"], {
-    onSuccess() {
-      utils.invalidateQueries(["lifts.getHistories"]);
-      setInputLifts({
-        deadlift: 0,
-        benchpress: 0,
-        squat: 0,
-        overhead: 0,
-      });
-    },
-  });
 
   const [inputLifts, setInputLifts] = useState({
     deadlift: 0,
@@ -42,14 +31,6 @@ export function Dashboard({ session, status }: DashboardProps) {
           {session.user?.name} <img src={session.user?.image || ""} />
         </p>
         <LiftsInputForm setInputLifts={setInputLifts} inputLifts={inputLifts} />
-        <button
-          className="bg-blue-600 rounded shadow text-gray-100 h-fit p-2 items-center"
-          onClick={async () => {
-            allLiftsMutation.mutate(inputLifts);
-          }}
-        >
-          Add Lifts
-        </button>
       </div>
       <div className="flex flex-row flex-wrap justify-around max-h-fit bg-green-200 border border-gray-900 shadow rounded m-4 p-4">
         <HistoricalPlots />
@@ -59,8 +40,21 @@ export function Dashboard({ session, status }: DashboardProps) {
 }
 
 function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
+  const utils = trpc.useContext();
+  const allLiftsMutation = trpc.useMutation(["lifts.addLifts"], {
+    onSuccess() {
+      utils.invalidateQueries(["lifts.getHistories"]);
+      setInputLifts({
+        deadlift: 0,
+        benchpress: 0,
+        squat: 0,
+        overhead: 0,
+      });
+    },
+  });
+
   return (
-    <form className="flex flex-auto place-content-center">
+    <form className="flex flex-auto place-content-center space-x-2">
       <div className="flex flex-wrap place-content-left">
         {_.map(
           inputLifts as { [key: string]: number },
@@ -90,6 +84,15 @@ function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
           }
         )}
       </div>
+      <button
+        className="bg-blue-600 rounded shadow text-gray-100 h-fit p-2 self-end"
+        onClick={async (e) => {
+          e.preventDefault();
+          allLiftsMutation.mutate(inputLifts);
+        }}
+      >
+        Add
+      </button>
     </form>
   );
 }
