@@ -62,7 +62,7 @@ const Home: NextPage = () => {
   }, []);
 
   return (
-    <div className="h-screen max-h-screen overflow-hidden m-0 p-0">
+    <div className="h-max sm:h-screen max-h-screen overflow-y-auto sm:overflow-hidden m-0 p-0">
       <header className="sticky top-0">
         <NavBar session={session} status={status} />
       </header>
