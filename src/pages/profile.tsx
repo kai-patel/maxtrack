@@ -25,7 +25,7 @@ const Profile: NextPage = () => {
           <div className="flex flex-row flex-shrink h-fit bg-gray-100 border border-gray-900 shadow rounded m-4 p-4 justify-evenly items-center">
             <p>{`Name: ${session.user.name}`}</p>
             <img src={session.user.image || ""} height="128px" width="128px" />
-            <button onClick={() => removeLiftsMutation.mutate()}>
+            <button onClick={() => removeLiftsMutation.mutate(null)}>
               Reset Lift History
             </button>
           </div>

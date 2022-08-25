@@ -1,4 +1,5 @@
 import { signIn, signOut } from "next-auth/react";
+import Link from "next/link";
 import React from "react";
 import { NavBarProps } from "../pages/index";
 
@@ -7,9 +8,12 @@ export function NavBar({ session, status }: NavBarProps) {
     <nav className="flex bg-gray-600 min-w-screen m-0 px-4 h-[5%] min-h-[5%] max-h-[5%] justify-between items-center shadow">
       <p className="font-bold text-gray-100 select-none text-lg">MaxTrack</p>
       <span className="flex items-center">
-        <a className="text-gray-100 select-none hover:underline p-4" href="/">
+        <Link
+          className="text-gray-100 select-none hover:underline p-4"
+          href="/"
+        >
           Dashboard
-        </a>
+        </Link>
         <NavBarProfileButton session={session} status={status} />
       </span>
     </nav>
@@ -22,7 +26,7 @@ function NavBarProfileButton({ session, status }: NavBarProps) {
     <div className="flex">
       {status === "authenticated" && session ? (
         <>
-          <a
+          <Link
             className={`flex items-center ${buttonStyle} [&>img]:hover:border-2 [&>img]:hover:border-emerald-500`}
             href="/profile"
           >
@@ -34,7 +38,7 @@ function NavBarProfileButton({ session, status }: NavBarProps) {
               width="32"
               referrerPolicy="no-referrer"
             />
-          </a>
+          </Link>
           <button className={buttonStyle} onClick={() => signOut()}>
             Sign Out
           </button>

@@ -88,7 +88,7 @@ export const protectedLiftsRouter = createProtectedRouter()
       overhead: z.number().min(0),
     }),
     async resolve({ ctx, input }) {
-      let oldLifts = await ctx.prisma.maxLifts.findFirst({
+      const oldLifts = await ctx.prisma.maxLifts.findFirst({
         where: {
           userId: ctx.session.user.id,
         },
@@ -100,7 +100,7 @@ export const protectedLiftsRouter = createProtectedRouter()
         },
       });
 
-      let newLifts = await ctx.prisma.user.update({
+      const newLifts = await ctx.prisma.user.update({
         where: {
           id: ctx.session.user.id,
         },
