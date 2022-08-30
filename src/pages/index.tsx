@@ -16,17 +16,17 @@ import React, { SetStateAction, useEffect } from "react";
 import { NavBar } from "../components/NavBar";
 import { Dashboard } from "../components/Dashboard";
 
-export type NavBarProps = {
+export interface NavBarProps {
   session: Session | null;
   status: "authenticated" | "loading" | "unauthenticated";
-};
+}
 
-export type DashboardProps = {
+export interface DashboardProps {
   session: Session | null;
   status: "authenticated" | "loading" | "unauthenticated";
-};
+}
 
-export type LiftsInputFormProps = {
+export interface LiftsInputFormProps {
   inputLifts: {
     deadlift: number;
     benchpress: number;
@@ -41,7 +41,7 @@ export type LiftsInputFormProps = {
       overhead: number;
     }>
   >;
-};
+}
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
