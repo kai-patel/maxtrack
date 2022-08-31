@@ -6,6 +6,8 @@ import { Line } from "react-chartjs-2";
 
 export function Dashboard({ session, status }: DashboardProps) {
   const utils = trpc.useContext();
+  const { data: maxes } = trpc.useQuery(["lifts.getAll"]);
+  console.log(maxes);
 
   const [inputLifts, setInputLifts] = useState({
     deadlift: 0,
@@ -16,6 +18,7 @@ export function Dashboard({ session, status }: DashboardProps) {
 
   if (status !== "authenticated" || !session) {
     utils.cancelQuery(["lifts.getHistories"]);
+    utils.cancelQuery(["lifts.getAll"]);
     return (
       <p className="font-bold text-2xl text-center w-full h-full p-10 bg-gray-100">
         You are not logged in. Whether you are a new or an existing user, please
@@ -27,9 +30,22 @@ export function Dashboard({ session, status }: DashboardProps) {
   return (
     <div className="flex flex-col w-full h-full bg-gray-800">
       <div className="flex flex-row flex-shrink h-fit bg-gray-100 border border-gray-900 shadow rounded m-4 p-4 justify-evenly items-center">
-        <p className="border rounded h-fit p-4 shadow">
-          {session.user?.name} <img src={session.user?.image || ""} />
-        </p>
+        <div className="hidden lg:flex flex-row border rounded h-fit w-fit p-2 shadow">
+          <div className="p-2">
+            <p className="text-center font-bold">{session.user?.name}</p>
+            <img className="rounded" src={session.user?.image || ""} />
+          </div>
+          {maxes && (
+            <div className="p-2">
+              <p>Records:</p>
+              <ul>
+                {_.map(maxes, (value, lift) => (
+                  <li>{`${_.capitalize(lift)}: ${value}`}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
         <LiftsInputForm setInputLifts={setInputLifts} inputLifts={inputLifts} />
       </div>
       <div className="flex flex-row flex-wrap justify-around max-h-fit bg-green-200 border border-gray-900 shadow rounded m-4 p-4">
@@ -44,6 +60,7 @@ function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
   const allLiftsMutation = trpc.useMutation(["lifts.addLifts"], {
     onSuccess() {
       utils.invalidateQueries(["lifts.getHistories"]);
+      utils.invalidateQueries(["lifts.getAll"]);
       setInputLifts({
         deadlift: 0,
         benchpress: 0,
