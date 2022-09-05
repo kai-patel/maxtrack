@@ -29,14 +29,14 @@ export function Dashboard({ session, status }: DashboardProps) {
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row flex-shrink h-fit bg-gray-100 shadow rounded m-4 p-4 justify-evenly items-center">
-        {/* <div className="hidden lg:flex flex-row border rounded h-fit w-fit p-2 shadow">
+      <div className="flex flex-row flex-shrink h-fit bg-gray-100 shadow rounded m-4 p-4 justify-evenly items-center space-x-4">
+        <div className="hidden xl:flex flex-row flex-shrink-0 border-r border-r-gray-800 h-fit w-fit p-2 pr-4 items-center">
           <div className="p-2">
-            <p className="text-center font-bold">{session.user?.name}</p>
-            <img className="rounded" src={session.user?.image || ""} />
+            {/* <p className="text-center font-bold">{`User: ${session.user?.name}`}</p> */}
+            <img className="rounded shadow" src={session.user?.image || ""} height="64" width="64" />
           </div>
           {maxes && (
-            <div className="p-2">
+            <div className="p-2 font-semibold ring-2 ring-gray-800 rounded">
               <p>Records:</p>
               <ul>
                 {_.map(maxes, (value, lift) => (
@@ -45,7 +45,7 @@ export function Dashboard({ session, status }: DashboardProps) {
               </ul>
             </div>
           )}
-        </div> */}
+        </div>
         <LiftsInputForm setInputLifts={setInputLifts} inputLifts={inputLifts} />
       </div>
       <div className="flex flex-row flex-shrink flex-wrap justify-around max-h-fit bg-green-200 shadow rounded m-4 p-4">
@@ -101,7 +101,7 @@ function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
           }
         )}
         <button
-          className="bg-blue-600 rounded shadow text-gray-100 h-fit p-2 mb-2 self-end"
+          className="bg-blue-600 rounded shadow text-gray-100 h-fit p-2 mb-2 ml-2 self-end"
           onClick={async (e) => {
             e.preventDefault();
             allLiftsMutation.mutate(inputLifts);
