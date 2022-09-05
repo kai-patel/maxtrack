@@ -29,7 +29,7 @@ export function Dashboard({ session, status }: DashboardProps) {
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row flex-shrink h-fit bg-gray-100 shadow rounded m-4 p-4 justify-evenly items-center space-x-4">
+      <div className="flex flex-row flex-shrink h-fit bg-gray-100 shadow rounded m-6 p-4 justify-evenly items-center space-x-4">
         <div className="hidden xl:flex flex-row flex-shrink-0 border-r border-r-gray-800 h-fit w-fit p-2 pr-4 items-center">
           <div className="p-2">
             {/* <p className="text-center font-bold">{`User: ${session.user?.name}`}</p> */}
@@ -48,7 +48,7 @@ export function Dashboard({ session, status }: DashboardProps) {
         </div>
         <LiftsInputForm setInputLifts={setInputLifts} inputLifts={inputLifts} />
       </div>
-      <div className="flex flex-row flex-shrink flex-wrap justify-around max-h-fit bg-green-200 shadow rounded m-4 p-4">
+      <div className="flex flex-row flex-shrink flex-wrap justify-around max-h-fit bg-green-200 shadow rounded m-6 p-4">
         <HistoricalPlots />
       </div>
     </div>
