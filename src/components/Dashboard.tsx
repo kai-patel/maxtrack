@@ -40,7 +40,7 @@ export function Dashboard({ session, status }: DashboardProps) {
               <p>Records:</p>
               <ul>
                 {_.map(maxes, (value, lift) => (
-                  <li>{`${_.capitalize(lift)}: ${value}`}</li>
+                  <li>{`${_.capitalize(lift)}: ${value}kg`}</li>
                 ))}
               </ul>
             </div>
