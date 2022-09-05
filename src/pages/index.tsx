@@ -62,11 +62,11 @@ const Home: NextPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen max-h-screen h-max sm:h-screen overflow-y-auto sm:overflow-hidden m-0 p-0 bg-gray-800">
+    <div className="block h-screen w-screen bg-gray-800">
       <header className="sticky top-0 z-50">
         <NavBar session={session} status={status} />
       </header>
-      <main className="relative flex flex-col items-center h-[95%] bg-gray-800">
+      <main className="relative flex flex-col items-center bg-gray-800">
         <Dashboard session={session} status={status} />
       </main>
     </div>

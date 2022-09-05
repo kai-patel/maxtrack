@@ -20,7 +20,7 @@ export function Dashboard({ session, status }: DashboardProps) {
     utils.cancelQuery(["lifts.getHistories"]);
     utils.cancelQuery(["lifts.getAll"]);
     return (
-      <p className="font-bold text-2xl text-center w-full h-full p-10 bg-gray-100">
+      <p className="w-full font-bold text-2xl text-center h-fit p-10 bg-gray-100">
         You are not logged in. Whether you are a new or an existing user, please
         sign in to use this website.
       </p>
@@ -28,15 +28,15 @@ export function Dashboard({ session, status }: DashboardProps) {
   }
 
   return (
-    <div className="flex flex-col w-full h-full bg-gray-800">
-      <div className="flex flex-row flex-shrink h-fit bg-gray-100 border border-gray-900 shadow rounded m-4 p-4 justify-evenly items-center">
-        <div className="hidden lg:flex flex-row border rounded h-fit w-fit p-2 shadow">
+    <div className="flex flex-col">
+      <div className="flex flex-row flex-shrink h-fit bg-gray-100 shadow rounded m-6 p-4 justify-evenly items-center space-x-4">
+        <div className="hidden xl:flex flex-row flex-shrink-0 border-r border-r-gray-800 h-fit w-fit p-2 pr-4 items-center">
           <div className="p-2">
-            <p className="text-center font-bold">{session.user?.name}</p>
-            <img className="rounded" src={session.user?.image || ""} />
+            {/* <p className="text-center font-bold">{`User: ${session.user?.name}`}</p> */}
+            <img className="rounded shadow" src={session.user?.image || ""} height="64" width="64" />
           </div>
           {maxes && (
-            <div className="p-2">
+            <div className="p-2 font-semibold ring-2 ring-gray-800 rounded">
               <p>Records:</p>
               <ul>
                 {_.map(maxes, (value, lift) => (
@@ -48,7 +48,7 @@ export function Dashboard({ session, status }: DashboardProps) {
         </div>
         <LiftsInputForm setInputLifts={setInputLifts} inputLifts={inputLifts} />
       </div>
-      <div className="flex flex-row flex-wrap justify-around max-h-fit bg-green-200 border border-gray-900 shadow rounded m-4 p-4">
+      <div className="flex flex-row flex-shrink flex-wrap justify-around max-h-fit bg-green-200 shadow rounded m-6 p-4">
         <HistoricalPlots />
       </div>
     </div>
@@ -71,14 +71,14 @@ function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
   });
 
   return (
-    <form className="flex flex-auto place-content-center space-x-2">
+    <form className="flex flex-shrink place-content-center space-x-2">
       <div className="flex flex-wrap place-content-left">
         {_.map(
           inputLifts as { [key: string]: number },
           (liftValue, lift, inputLiftsCast) => {
             return (
-              <div key={lift}>
-                <label className="flex justify-evenly p-2 select-none w-full max-w-1/4">
+              <div className="flex-shrink p-2" key={lift}>
+                <label className="flex justify-evenly pb-2 select-none">
                   {`${_.capitalize(lift)}:`}
                 </label>
                 <input
@@ -100,16 +100,16 @@ function LiftsInputForm({ setInputLifts, inputLifts }: LiftsInputFormProps) {
             );
           }
         )}
+        <button
+          className="bg-blue-600 rounded shadow text-gray-100 h-fit p-2 mb-2 ml-2 self-end"
+          onClick={async (e) => {
+            e.preventDefault();
+            allLiftsMutation.mutate(inputLifts);
+          }}
+        >
+          Add
+        </button>
       </div>
-      <button
-        className="bg-blue-600 rounded shadow text-gray-100 h-fit p-2 self-end"
-        onClick={async (e) => {
-          e.preventDefault();
-          allLiftsMutation.mutate(inputLifts);
-        }}
-      >
-        Add
-      </button>
     </form>
   );
 }
