@@ -7,7 +7,6 @@ import { Line } from "react-chartjs-2";
 export function Dashboard({ session, status }: DashboardProps) {
   const utils = trpc.useContext();
   const { data: maxes } = trpc.useQuery(["lifts.getAll"]);
-  console.log(maxes);
 
   const [inputLifts, setInputLifts] = useState({
     deadlift: 0,
