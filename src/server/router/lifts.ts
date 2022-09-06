@@ -28,6 +28,7 @@ export const protectedLiftsRouter = createProtectedRouter()
           benchpressHistory: true,
           squatHistory: true,
           overheadHistory: true,
+          liftsAddedTimes: true,
         },
       });
     },
@@ -127,6 +128,9 @@ export const protectedLiftsRouter = createProtectedRouter()
                 overheadHistory: {
                   push: input.overhead,
                 },
+                liftsAddedTimes: {
+                  push: new Date(),
+                },
               },
               create: {
                 ...input,
@@ -134,6 +138,7 @@ export const protectedLiftsRouter = createProtectedRouter()
                 benchpressHistory: input.benchpress,
                 squatHistory: input.squat,
                 overheadHistory: input.overhead,
+                liftsAddedTimes: new Date(),
               },
             },
           },

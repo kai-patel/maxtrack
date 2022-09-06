@@ -32,14 +32,19 @@ export function Dashboard({ session, status }: DashboardProps) {
         <div className="hidden xl:flex flex-row flex-shrink-0 border-r border-r-gray-800 h-fit w-fit p-2 pr-4 items-center">
           <div className="p-2">
             {/* <p className="text-center font-bold">{`User: ${session.user?.name}`}</p> */}
-            <img className="rounded shadow" src={session.user?.image || ""} height="64" width="64" />
+            <img
+              className="rounded shadow"
+              src={session.user?.image || ""}
+              height="64"
+              width="64"
+            />
           </div>
           {maxes && (
             <div className="p-2 font-semibold ring-2 ring-gray-800 rounded">
               <p>Records:</p>
               <ul>
                 {_.map(maxes, (value, lift) => (
-                  <li>{`${_.capitalize(lift)}: ${value}kg`}</li>
+                  <li key={lift}>{`${_.capitalize(lift)}: ${value}kg`}</li>
                 ))}
               </ul>
             </div>
@@ -127,6 +132,7 @@ function HistoricalPlots() {
   return (
     <>
       {_.map(histories.data, (liftHistory, name) => {
+        if (name === "liftsAddedTimes") return null;
         return (
           <div key={name} className="">
             <Line
@@ -159,7 +165,9 @@ function HistoricalPlots() {
                 },
               }}
               data={{
-                labels: Object.keys(liftHistory),
+                labels: histories.data?.liftsAddedTimes.map((date) =>
+                  date.toLocaleDateString()
+                ),
                 datasets: [
                   {
                     label: "Weight",
